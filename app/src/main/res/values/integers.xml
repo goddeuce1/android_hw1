@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="MAX_VALUES">100</integer>
+    <integer name="VERT_COLUMNS">3</integer>
+    <integer name="HORIZ_COLUMNS">4</integer>
+</resources>
