@@ -18,26 +18,33 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentList extends Fragment {
 
     private EventListener eventListener;
-    private ArrayList<Integer> mNumbers;
+    private List<Integer> numbers;
 
     public interface EventListener {
         void onItemClick(String number, int color);
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         eventListener = (EventListener)context;
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        eventListener = null;
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(getString(R.string.ARRAY_KEY), mNumbers);
+        outState.putIntegerArrayList("array", (ArrayList<Integer>) numbers);
     }
 
     @Override
@@ -45,23 +52,23 @@ public class FragmentList extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mNumbers = savedInstanceState.getIntegerArrayList(getString(R.string.ARRAY_KEY));
+            numbers = savedInstanceState.getIntegerArrayList("array");
         } else {
-            mNumbers = new ArrayList<>();
+            numbers = new ArrayList<>();
 
             for (int i = 0; i < getResources().getInteger(R.integer.MAX_VALUES); ++i) {
-                mNumbers.add(i + 1);
+                numbers.add(i + 1);
             }
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_fragment_list, container, false);
 
-        int orientation = getResources().getConfiguration().orientation;
+        final int orientation = getResources().getConfiguration().orientation;
         RecyclerView recyclerView = view.findViewById(R.id.list);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -70,15 +77,15 @@ public class FragmentList extends Fragment {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.HORIZ_COLUMNS)));
         }
 
-        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(mNumbers);
+        final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(numbers);
         recyclerView.setAdapter(recyclerAdapter);
 
-        Button btn = view.findViewById(R.id.btn);
+        final Button btn = view.findViewById(R.id.btn);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mNumbers.add(mNumbers.size() + 1);
+                numbers.add(numbers.size() + 1);
                 recyclerAdapter.notifyDataSetChanged();
             }
         });
@@ -88,19 +95,29 @@ public class FragmentList extends Fragment {
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mSingleValue;
+        private final TextView singleValue;
 
         private RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            mSingleValue = itemView.findViewById(R.id.value);
+            singleValue = itemView.findViewById(R.id.value);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(@NonNull View view) {
+                    final TextView number = view.findViewById(R.id.value);
+                    final String value = number.getText().toString();
+                    final int color = number.getCurrentTextColor();
+                    eventListener.onItemClick(value, color);
+                }
+            });
         }
     }
 
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
-        private ArrayList<Integer> mValues;
+        private List<Integer> values;
 
-        private RecyclerAdapter(ArrayList<Integer> values) {
-            mValues = values;
+        private RecyclerAdapter(@NonNull List<Integer> values) {
+            this.values = values;
         }
 
         @NonNull
@@ -112,30 +129,30 @@ public class FragmentList extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-            holder.mSingleValue.setText(String.valueOf(mValues.get(position)));
-            int number = Integer.parseInt(holder.mSingleValue.getText().toString());
+            holder.singleValue.setText(String.valueOf(values.get(position)));
+            final int number = Integer.parseInt(holder.singleValue.getText().toString());
 
             if (number % 2 == 0) {
-                holder.mSingleValue.setTextColor(Color.RED);
+                holder.singleValue.setTextColor(Color.RED);
             } else {
-                holder.mSingleValue.setTextColor(Color.BLUE);
+                holder.singleValue.setTextColor(Color.BLUE);
             }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView number = view.findViewById(R.id.value);
-                    String value = number.getText().toString();
-                    int color = number.getCurrentTextColor();
-                    eventListener.onItemClick(value, color);
-                }
-            });
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(@NonNull View view) {
+//                    final TextView number = view.findViewById(R.id.value);
+//                    final String value = number.getText().toString();
+//                    final int color = number.getCurrentTextColor();
+//                    eventListener.onItemClick(value, color);
+//                }
+//            });
 
         }
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return values.size();
         }
     }
 }

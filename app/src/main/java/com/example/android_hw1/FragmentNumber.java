@@ -1,9 +1,9 @@
 package com.example.android_hw1;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import android.widget.TextView;
 public class FragmentNumber extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_number, container,false);
 
-        savedInstanceState = getArguments();
+        final Bundle bundle = getArguments();
 
-        if (savedInstanceState != null) {
-            String value = savedInstanceState.getString(getString(R.string.VALUE));
-            int color = savedInstanceState.getInt(getString(R.string.COLOR));
+        if (bundle != null) {
+            final String value = bundle.getString("value");
+            final int color = bundle.getInt("color");
             TextView textView = (TextView)view.findViewById(R.id.fragmentTwoNumber);
             textView.setText(value);
             textView.setTextColor(color);
