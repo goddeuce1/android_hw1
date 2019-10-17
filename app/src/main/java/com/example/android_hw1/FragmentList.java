@@ -72,9 +72,9 @@ public class FragmentList extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.list);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.VERT_COLUMNS)));
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.VERTICAL_COLUMNS)));
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.HORIZ_COLUMNS)));
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.HORIZONTAL_COLUMNS)));
         }
 
         final RecyclerAdapter recyclerAdapter = new RecyclerAdapter(numbers);
@@ -114,7 +114,7 @@ public class FragmentList extends Fragment {
     }
 
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
-        private List<Integer> values;
+        private final List<Integer> values;
 
         private RecyclerAdapter(@NonNull List<Integer> values) {
             this.values = values;
@@ -137,16 +137,6 @@ public class FragmentList extends Fragment {
             } else {
                 holder.singleValue.setTextColor(Color.BLUE);
             }
-
-//            holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(@NonNull View view) {
-//                    final TextView number = view.findViewById(R.id.value);
-//                    final String value = number.getText().toString();
-//                    final int color = number.getCurrentTextColor();
-//                    eventListener.onItemClick(value, color);
-//                }
-//            });
 
         }
 
