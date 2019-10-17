@@ -1,7 +1,6 @@
 package com.example.android_hw1;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
