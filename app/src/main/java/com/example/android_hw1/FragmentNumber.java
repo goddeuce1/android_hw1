@@ -23,7 +23,7 @@ public class FragmentNumber extends Fragment {
         if (bundle != null) {
             final String value = bundle.getString("value");
             final int color = bundle.getInt("color");
-            TextView textView = (TextView)view.findViewById(R.id.fragmentTwoNumber);
+            TextView textView = view.findViewById(R.id.fragmentTwoNumber);
             textView.setText(value);
             textView.setTextColor(color);
         }
